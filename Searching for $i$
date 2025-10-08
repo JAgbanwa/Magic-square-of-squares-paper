@@ -1,0 +1,32 @@
+\begin{lstlisting} [style = sagemath]
+    ....:     print(f"Match: {lhs == rhs}")
+....: 
+....:     # Save to file
+....:     with open("i_solutions.txt", "w") as f:
+....:         f.write("k,m,n,i\n")
+....:         for k, m, n, i_val in all_solutions:
+....:             f.write(f"{k},{m},{n},{i_val}\n")
+....:     print(f"\nSolutions saved to 'i_solutions.txt'")
+....: 
+....:     # Show statistics
+....:     print(f"\nStatistics:")
+....:     k_values = [sol[0] for sol in all_solutions]
+....:     m_values = [sol[1] for sol in all_solutions]
+....:     n_values = [sol[2] for sol in all_solutions]
+....: 
+....:     print(f"Most common k: {max(set(k_values), key=k_values.count)}")
+....:     print(f"Most common m: {max(set(m_values), key=m_values.count)}")
+....:     print(f"Most common n: {max(set(n_values), key=n_values.count)}")
+....: 
+....: # Advanced search with perfect square analysis
+....: print("\n" + "="*60)
+....: print("ADVANCED SEARCH WITH MAGIC SQUARE POTENTIAL")
+....: advanced_solutions = find_solutions_with_perfect_squares(k_max=10000, m_ma
+....: x=100000, n_max=100000)
+=== INTEGER SOLUTIONS FOR i^2 EQUATION ===
+Equation: i^2 = 4 * k^4 * (m^2 - n^2)^2 * n^2 + m^2
+
+Searching for integer solutions...
+Parameters: k=1..100000, m=1..100000, n=1..100000
+============================================================
+\end{lstlisting}
