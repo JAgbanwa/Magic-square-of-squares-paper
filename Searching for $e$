@@ -1,0 +1,47 @@
+\begin{lstlisting} [style = sagemath]
+    ....: if all_solutions:
+....:     print("\nFirst 10 unique solutions (k, m, n, e):")
+....:     for i, sol in enumerate(all_solutions[:10]):
+....:         print(f"{i+1}. k={sol[0]}, m={sol[1]}, n={sol[2]}, e={sol[3]}")
+....: 
+....:     # Save to file for further analysis
+....:     with open("e_solutions.txt", "w") as f:
+....:         f.write("k,m,n,e\n")
+....:         for k, m, n, e in all_solutions:
+....:             f.write(f"{k},{m},{n},{e}\n")
+....:     print(f"\nSolutions saved to 'e_solutions.txt'")
+....: 
+....:     # Show some interesting examples
+....:     print(f"\nInteresting examples:")
+....:     # Find solution with smallest e
+....:     min_e_sol = min(all_solutions, key=lambda x: x[3])
+....:     print(f"Smallest e: k={min_e_sol[0]}, m={min_e_sol[1]}, n={min_e_sol[2
+....: ]}, e={min_e_sol[3]}")
+....: 
+....:     # Find solution with largest e
+....:     max_e_sol = max(all_solutions, key=lambda x: x[3])
+....:     print(f"Largest e: k={max_e_sol[0]}, m={max_e_sol[1]}, n={max_e_sol[2]
+....: }, e={max_e_sol[3]}")
+....: 
+=== INTEGER SOLUTIONS FOR e^2 EQUATION ===
+Searching for integer solutions...
+Parameters: k=1..20, m=1..50, n=1..50
+============================================================
+
+Found 3 solutions:
+k	m	n	e
+------------------------------
+1	3	2	17
+1	20	2	1156
+2	10	1	578
+
+Analysis:
+Smallest k: 1
+Largest k: 2
+Smallest m: 3
+Largest m: 20
+Perfect square configurations: 3
+Efficient search with divisibility checks...
+
+Efficient search found: 3 solutions
+\end{lstlisting}
