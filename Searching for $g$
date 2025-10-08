@@ -1,0 +1,33 @@
+\begin{lstlisting}[style=sagemath]
+    ....: solutions = optimized_g_search(10000, 10000, 10000)
+....: 
+....: if not solutions:
+....:     print("No solutions found in range 1-10000.")
+....:     print("You may need to try specific parameter families or larger range
+....: s with more computation time.")
+....: 
+....: print(f"\nTotal solutions found: {len(solutions)}")
+....: 
+....: if solutions:
+....:     print("\nAnalysis of found solutions:")
+....:     for i, (m, n, k, g) in enumerate(solutions, 1):
+....:         print(f"Solution {i}:")
+....:         print(f"  R2 = m = {m}, R3 = n = {n}, k = {k}")
+....:         print(f"  g = {g} (g^2 = {g^2})")
+....: 
+....:         # Check if this gives a valid magic square corner
+....:         a2 = 4*k^2 * m^2 * n^2 + n^2
+....:         if a2.is_square():
+....:             print(f"  -> a = {a2.sqrt()} (perfect square!)")
+....:         else:
+....:             print(f"  -> a^2 = {a2} (not a perfect square)")
+....:         print()
+....: 
+Searching for solutions to g^2 equation...
+============================================================
+SOLUTION: m=9, n=8, k=1, g=229
+a^2 = 20800, i^2 = 20817
+
+SOLUTION: m=11, n=6, k=1, g=745
+a^2 = 17460, i^2 = 17545
+\end{lstlisting}
