@@ -1,0 +1,163 @@
+\begin{lstlisting}[style=sagemath]
+    # Search for integer solutions to the magic square of squares equation
+# y^2 = 2*n^2*(m^2 - n^2)^2*k^4 + [2*(m*n)^2 - 4*m*n*(m^2 - n^2)]*k^2 + [m^2 + k^2*(m^2 - n^2)^2]/2
+
+def search_solutions(m_max, n_max, k_max):
+    """
+    Search for integer solutions (m, n, k, y) where:
+    - 1 <= n < m <= m_max
+    - 1 <= k <= k_max
+    """
+    solutions = []
+    
+    for m in range(1, m_max + 1):
+        for n in range(1, m):  # n < m since R_3 < R_2
+            if gcd(m, n) != 1:  # Optional: search for coprime pairs first
+                continue
+                
+            # Precompute common terms for efficiency
+            m2 = m^2
+            n2 = n^2
+            m2_minus_n2 = m2 - n2
+            m2_minus_n2_sq = m2_minus_n2^2
+            mn = m * n
+            mn2 = (m * n)^2
+            
+            for k in range(1, k_max + 1):
+                k2 = k^2
+                k4 = k^4
+                
+                # Compute the right-hand side
+                term1 = 2 * n2 * m2_minus_n2_sq * k4
+                term2 = (2 * mn2 - 4 * mn * m2_minus_n2) * k2
+                term3 = (m2 + k2 * m2_minus_n2_sq) / 2
+                
+                rhs = term1 + term2 + term3
+                
+                # Check if rhs is a perfect square
+                if rhs.is_integer():
+                    rhs_int = Integer(rhs)
+                    if rhs_int >= 0 and rhs_int.is_square():
+                        y = rhs_int.sqrt()
+                        if y.is_integer():
+                            y_int = Integer(y)
+                            solutions.append((m, n, k, y_int))
+                            print(f"Solution found: m={m}, n={n}, k={k}, y={y_int}")
+                            print(f"  Verification: {y_int}^2 = {rhs_int}")
+                            print(f"  Terms: {term1} + {term2} + {term3} = {rhs_int}")
+                            print()
+    
+    return solutions
+
+# Also search for negative k (same as positive due to even powers)
+def search_solutions_with_neg_k(m_max, n_max, k_max):
+    """Search including negative k values"""
+    solutions = []
+    
+    for m in range(1, m_max + 1):
+        for n in range(1, m):
+            if gcd(m, n) != 1:
+                continue
+                
+            m2 = m^2
+            n2 = n^2
+            m2_minus_n2 = m2 - n2
+            m2_minus_n2_sq = m2_minus_n2^2
+            mn = m * n
+            mn2 = (m * n)^2
+            
+            for k in range(-k_max, k_max + 1):
+                if k == 0:
+                    continue
+                    
+                k2 = k^2
+                k4 = k^4
+                
+                term1 = 2 * n2 * m2_minus_n2_sq * k4
+                term2 = (2 * mn2 - 4 * mn * m2_minus_n2) * k2
+                term3 = (m2 + k2 * m2_minus_n2_sq) / 2
+                
+                rhs = term1 + term2 + term3
+                
+                if rhs.is_integer():
+                    rhs_int = Integer(rhs)
+                    if rhs_int >= 0 and rhs_int.is_square():
+                        y = rhs_int.sqrt()
+                        if y.is_integer():
+                            y_int = Integer(y)
+                            solutions.append((m, n, k, y_int))
+                            print(f"Solution found: m={m}, n={n}, k={k}, y={y_int}")
+    
+    return solutions
+
+# More efficient version that checks if the expression can be a square before full computation
+def efficient_search(m_max, n_max, k_max):
+    """More efficient search with early termination checks"""
+    solutions = []
+    
+    for m in range(1, m_max + 1):
+        for n in range(1, m):
+            # Check if the expression can potentially be a square modulo some number
+            m2 = m^2
+            n2 = n^2
+            m2_minus_n2 = m2 - n2
+            
+            if m2_minus_n2 == 0:  # m = n, not allowed
+                continue
+                
+            for k in range(1, k_max + 1):
+                # Compute the value
+                value = (2 * n2 * (m2_minus_n2)^2 * k^4 + 
+                        (2 * (m*n)^2 - 4 * m * n * m2_minus_n2) * k^2 + 
+                        (m2 + k^2 * (m2_minus_n2)^2) / 2)
+                
+                if value in ZZ and value >= 0:
+                    if is_square(value):
+                        y = sqrt(value)
+                        if y in ZZ:
+                            solutions.append((m, n, k, y))
+                            print(f"SOLUTION: m={m}, n={n}, k={k}, y={y}")
+                            print(f"  Value = {value}")
+                            
+                            # This would correspond to c^2 in your magic square
+                            c_squared = value
+                            print(f"  This gives c^2 = {c_squared}")
+                            if is_square(c_squared):
+                                c = sqrt(c_squared)
+                                print(f"  => c = {c} (perfect square!)\n")
+                            else:
+                                print(f"  => c = sqrt({c_squared}) (not a perfect square)\n")
+    
+    return solutions
+
+# Run the search
+print("Searching for solutions to the magic square equation...")
+print("=" * 60)
+
+# Test with small ranges first
+solutions = efficient_search(m_max=20, n_max=20, k_max=50)
+
+if not solutions:
+    print("No solutions found in the given range.")
+    print("Trying larger range...")
+    solutions = efficient_search(m_max=50, n_max=50, k_max=100)
+
+print(f"\nTotal solutions found: {len(solutions)}")
+
+# If solutions found, analyze them
+if solutions:
+    print("\nAnalyzing solutions:")
+    for i, (m, n, k, y) in enumerate(solutions, 1):
+        print(f"Solution {i}:")
+        print(f"  R_2 = m = {m}, R_3 = n = {n}, k = {k}")
+        print(f"  y = {y}")
+        
+        # Compute the corresponding magic square values
+        R2, R3, k_val = m, n, k
+        a2 = 4*k_val^2 * R2^2 * R3^2 + R3^2  # From your formulas
+        i2 = 4 * R3^2 * R2^2 * k_val^2 + R2^2
+        
+        print(f"  a^2 = {a2}, i^2 = {i2}")
+        print(f"  c^2 = y^2 = {y^2}")
+        print()
+\end{lstlisting}
