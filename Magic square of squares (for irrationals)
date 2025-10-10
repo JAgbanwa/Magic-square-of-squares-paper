@@ -1,0 +1,58 @@
+\begin{align*}
+a &= k \cdot (R_2^2 + R_3^2) \\[1em]
+  &= k \cdot (k^4 + (\frac{k^4 + k}{k^2 + 1})) \\[1em]
+  &=  k^5 + (\frac{k^4 + k}{k^2 + 1}) \cdot k\\[1em]
+b &= 2k^2 \cdot R_3 \cdot (R_2^2 - R_3^2) + R_2\\[1em]
+  &= 2k^2 \cdot \sqrt{\frac{k^4 + k}{k^2 + 1}} \cdot (k^4 - \frac{k^4 + k}{k^2 + 1}) + k^2\\[1em]
+c^2  &= 2 \cdot R_3 ^2\cdot (R_2^2 - R_3^2)^2 \cdot k^4 + (2 \cdot (R_2 \cdot R_3)^2 - 4 \cdot R_2 \cdot R_3 \cdot (R_2^2 - R_3^2)) \cdot k^2 + \frac{R_2^2 + k^2 \cdot (R_2^2 - R_3^2)^2}{2}\\[1em]
+   &= 2 \cdot  \frac{k^4 + k}{k^2 + 1} \cdot (k^4 -  \frac{k^4 + k}{k^2 + 1})^2 \cdot k^4 + (2 \cdot (k^4 \cdot \frac{k^4 + k}{k^2 + 1}) - 4 \cdot k^2 \cdot \sqrt{ \frac{k^4 + k}{k^2 + 1}} \cdot (k^4 -  \frac{k^4 + k}{k^2 + 1}) \cdot k^2 + \frac{k^4 + k^2 \cdot (k^4 - \frac{k^4 + k}{k^2 + 1})^2}{2}\\[1em]
+d  &= 2k^2 \cdot R_3 \cdot (R_2^2 - R_3^2) - R_2\\[1em]
+   &= 2k^2 \cdot \sqrt{\frac{k^4 + k}{k^2 + 1}} \cdot (k^4 - \frac{k^4 + k}{k^2 + 1}) - k^2\\[1em]
+f &= 2 \cdot R_2 \cdot R_3 \cdot k + k \cdot (R_2^2 - R_3^2) \\[1em]
+  &=  (2 \cdot R_2 \cdot R_3 + R_2^2 - R_3^2) \cdot k \\[1em]
+  &=  (2 \cdot k^2 \cdot \sqrt{\frac{k^4 + k}{k^2 + 1}} + k^4 - \frac{k^4 + k}{k^2 + 1}) \cdot k \\[1em]
+g^2 &= 2 \cdot R_3 ^2\cdot (R_2^2 - R_3^2)^2 \cdot k^4 + (2 \cdot (R_2 \cdot R_3)^2   + 4 \cdot R_2 \cdot R_3 \cdot  (R_2^2 - R_3^2)) \cdot k^2 + \frac{R_2^2 + k^2 \cdot (R_2^2 - R_3^2)^2}{2}\\[1em]
+    &= 2 \cdot  \frac{k^4 + k}{k^2 + 1} \cdot (k^4 -  \frac{k^4 + k}{k^2 + 1})^2 \cdot k^4 + (2 \cdot (k^4 \cdot \frac{k^4 + k}{k^2 + 1}) + 4 \cdot k^2 \cdot \sqrt{ \frac{k^4 + k}{k^2 + 1}} \cdot (k^4 -  \frac{k^4 + k}{k^2 + 1}) \cdot k^2 + \frac{k^4 + k^2 \cdot (k^4 - \frac{k^4 + k}{k^2 + 1})^2}{2}\\[1em]
+h &= 2 \cdot R_2 \cdot R_3 \cdot k - R_4 \\[1em]
+  &= (2 \cdot k^2 \cdot \sqrt{\frac{k^4 + k}{k^2 + 1}} + \frac{k^4 + k}{k^2 + 1} - k^4 ) \cdot k\\[1em]
+i &= k \left( (k \cdot R_3)^2 + (R_2^2 - R_3^2)^2 \right)\\[1em]
+  &= k^3 \cdot \frac{k^4 + k}{k^2 + 1} + (k^4 - \frac{k^4 + k}{k^2 + 1})^2 \cdot k \\[1em]
+e^2 &=  \left[ 2 \cdot \left( (R_2 \cdot R_3)^2 + R_3 ^2 \cdot k^2 \cdot (R_2^2 - R_3^2)^2 \right) \right] k^2  + \frac{R_2^2 + ( k^ \cdot (R_2^2 - R_3^2))^2}{2} \\
+    &= 2 \cdot R_3 ^2 \cdot (R_2^2 - R_3^2)^2 \cdot k^4 + 2 \cdot (R_2 \cdot R_3)^2 \cdot k^2 + \frac{R_2^2 + ( k^ \cdot (R_2^2 - R_3^2))^2}{2} \\[1em]
+    &= 2 \cdot \frac{k^4 + k}{k^2 + 1} \cdot (k^4 -  \frac{k^4 + k}{k^2 + 1})^2 \cdot k^4 + 2 \cdot (k^4 \cdot  \frac{k^4 + k}{k^2 + 1}) \cdot k^2 + \frac{k^4 +  k^2 \cdot (k^4 - \frac{k^4 + k}{k^2 + 1})^2}{2}
+\end{align*}
+
+
+
+
+
+\begin{example}
+\begin{align*}
+a &=  k^5 + (\frac{k^4 + k}{k^2 + 1})\cdot k \\[1em]
+  &=  \frac{19047807771769331973}{196565} \\[1em]
+b &= 2k^2 \cdot \sqrt{\frac{k^4 + k}{k^2 + 1}} \cdot (k^4 - \frac{k^4 + k}{k^2 + 1}) + k^2\\[1em]
+  &= 393129   + \frac{23885829429301479538998 \cdot \sqrt{\frac{77275205634}{196565}}}{196565}                                    \\[1em]
+c^2 &= 2 \cdot  \frac{k^4 + k}{k^2 + 1} \cdot (k^4 -  \frac{k^4 + k}{k^2 + 1})^2 \cdot k^4 + (2 \cdot (k^4 \cdot \frac{k^4 + k}{k^2 + 1}) - 4 \cdot k^2 \cdot \sqrt{ \frac{k^4 + k}{k^2 + 1}} \cdot (k^4 -  \frac{k^4 + k}{k^2 + 1}) \cdot k^2 + \frac{k^4 + k^2 \cdot (k^4 - \frac{k^4 + k}{k^2 + 1})^2}{2}\\[1em]
+&=\tfrac{22044021556785082864140758367341296727716637599587252873}{7594839004662125}\\[1em]
+&-\tfrac{18780424475423722699373489484}{196565} \cdot \sqrt{\frac{77275205634}{196565}}\\[1em]
+d  &= 2k^2 \cdot R_3 \cdot (R_2^2 - R_3^2) - R_2\\[1em]
+   &= 2k^2 \cdot \sqrt{\frac{k^4 + k}{k^2 + 1}} \cdot (k^4 - \frac{k^4 + k}{k^2 + 1}) - k^2\\[1em]
+   &= -393129 + \frac{23885829429301479538998 \cdot \sqrt{\frac{77275205634}{196565}}}{196565}\\[1em]
+f &= 2 \cdot R_2 \cdot R_3 \cdot k + k \cdot (R_2^2 - R_3^2) \\[1em]
+  &=  (2 \cdot R_2 \cdot R_3 + R_2^2 - R_3^2) \cdot k \\[1em]
+  &=  (2 \cdot k^2 \cdot \sqrt{\frac{k^4 + k}{k^2 + 1}} + k^4 - \frac{k^4 + k}{k^2 + 1}) \cdot k \\[1em]
+  &=  627 \left(  786258 \cdot \sqrt{\frac{77275205634}{196565}} +   \frac{30379124192442531}{196565}                                   \right)\\[1em]
+g^2 &= 2 \cdot R_3 ^2\cdot (R_2^2 - R_3^2)^2 \cdot k^4 + (2 \cdot (R_2 \cdot R_3)^2   + 4 \cdot R_2 \cdot R_3 \cdot  (R_2^2 - R_3^2)) \cdot k^2 + \frac{R_2^2 + k^2 \cdot (R_2^2 - R_3^2)^2}{2}\\[1em]
+    &= 2 \cdot  \frac{k^4 + k}{k^2 + 1} \cdot (k^4 -  \frac{k^4 + k}{k^2 + 1})^2 \cdot k^4 + (2 \cdot (k^4 \cdot \frac{k^4 + k}{k^2 + 1}) + 4 \cdot k^2 \cdot \sqrt{ \frac{k^4 + k}{k^2 + 1}} \cdot (k^4 -  \frac{k^4 + k}{k^2 + 1})) \cdot k^2 + \frac{k^4 + k^2 \cdot (k^4 - \frac{k^4 + k}{k^2 + 1})^2}{2}\\[1em]
+   &=\tfrac{22044021556785082864140758367341296727716637599587252873}{7594839004662125} \\[1em]
+   & + \tfrac{18780424475423722699373489484}{196565}\cdot \sqrt{\frac{77275205634}{196565}}\\[1em]
+\end{align*}
+\begin{align*} 
+h &= (2 \cdot k^2 \cdot \sqrt{\frac{k^4 + k}{k^2 + 1}} +   \frac{k^4 + k}{k^2 + 1} - k^4 ) \cdot k\\[1em]
+  &= 627 \left(  786258 \cdot \sqrt{\frac{77275205634}{196565}} -   \frac{30379124192442531}{196565}                                   \right) \\[1em]
+i &= k^3 \cdot \frac{k^4 + k}{k^2 + 1} + (k^4 - \frac{k^4 + k}{k^2 + 1})^2 \cdot k \\[1em]
+  &= \frac{578652774064548220724532548149093977}{38637799225} \\[1em]
+e^2 &= 2 \cdot R_3 ^2 \cdot (R_2^2 - R_3^2)^2 \cdot k^4 + 2 \cdot (R_2 \cdot R_3)^2 \cdot k^2 + \frac{R_2^2 + ( k^ \cdot (R_2^2 - R_3^2))^2}{2} \\[1em]
+    &= 2 \cdot \frac{k^4 + k}{k^2 + 1} \cdot (k^4 -  \frac{k^4 + k}{k^2 + 1})^2 \cdot k^4 + 2 \cdot (k^4 \cdot  \frac{k^4 + k}{k^2 + 1}) \cdot k^2 + \frac{k^4 +  k^2 \cdot (k^4 - \frac{k^4 + k}{k^2 + 1})^2}{2} \\[1em] &=\frac{22044021556785083226956972064231613479927668099514783273}{7594839004662125}\\[1em]
+\end{align*}
+\end{example}
