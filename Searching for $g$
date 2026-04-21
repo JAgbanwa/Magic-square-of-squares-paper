@@ -1,28 +1,262 @@
 \begin{lstlisting}[style=sagemath]
-    ....: solutions = optimized_g_search(10000, 10000, 10000)
-....: 
-....: if not solutions:
-....:     print("No solutions found in range 1-10000.")
-....:     print("You may need to try specific parameter families or larger range
-....: s with more computation time.")
-....: 
-....: print(f"\nTotal solutions found: {len(solutions)}")
-....: 
-....: if solutions:
-....:     print("\nAnalysis of found solutions:")
-....:     for i, (m, n, k, g) in enumerate(solutions, 1):
-....:         print(f"Solution {i}:")
-....:         print(f"  R2 = m = {m}, R3 = n = {n}, k = {k}")
-....:         print(f"  g = {g} (g^2 = {g^2})")
-....: 
-....:         # Check if this gives a valid magic square corner
-....:         a2 = 4*k^2 * m^2 * n^2 + n^2
-....:         if a2.is_square():
-....:             print(f"  -> a = {a2.sqrt()} (perfect square!)")
-....:         else:
-....:             print(f"  -> a^2 = {a2} (not a perfect square)")
-....:         print()
-....: 
+  from sage.all import *
+
+def find_solutions_with_perfect_squares(k_max=10000, m_max=100000, n_max=100000):
+    """
+    Advanced search focusing on perfect square conditions for magic square potential
+    """
+    solutions = []
+    
+    print("ADVANCED SEARCH WITH PERFECT SQUARE ANALYSIS")
+    print("=" * 60)
+    print(f"Searching: k ≤ {k_max}, m ≤ {m_max}, n ≤ {n_max}")
+    print("=" * 60)
+    
+    total_checks = 0
+    found = 0
+    
+    for k in range(1, k_max + 1):
+        if k % 1000 == 0:
+            print(f"Progress: k={k}/{k_max}, Found={found}, Checks={total_checks}")
+        
+        k2 = k^2
+        k4 = k2^2
+        
+        # Use mathematical properties to limit m,n ranges
+        # The expression structure suggests certain relationships
+        
+        for m in range(1, min(m_max, 1000) + 1):  # Start with smaller m
+            m2 = m^2
+            
+            # n must be less than m
+            for n in range(1, min(m, n_max) + 1):
+                if m - n > 500:  # Limit difference for efficiency
+                    continue
+                    
+                total_checks += 1
+                
+                # Compute the expression that should be a perfect square
+                n2 = n^2
+                diff = m2 - n2
+                diff2 = diff^2
+                
+                # Compute i² (or g² in your notation)
+                i_squared = (2 * n2 * diff2 * k4 + 
+                            (2 * m2 * n2 + 4 * m * n * diff) * k2 + 
+                            (m2 + k2 * diff2) / 2)
+                
+                if i_squared > 0 and is_square(i_squared):
+                    i_val = isqrt(i_squared)
+                    
+                    # Check if this could be part of a magic square
+                    # Additional conditions for magic square potential
+                    
+                    # Condition 1: i must be integer (already satisfied)
+                    # Condition 2: Check for Pythagorean relationships
+                    
+                    # Try to find complementary values
+                    # For magic squares, we often need pairs with certain properties
+                    
+                    # Check if there's a corresponding c value
+                    c_squared = (2 * n2 * diff2 * k4 + 
+                                (2 * m2 * n2 - 4 * m * n * diff) * k2 + 
+                                (m2 + k2 * diff2) / 2)
+                    
+                    if c_squared > 0 and is_square(c_squared):
+                        c_val = isqrt(c_squared)
+                        
+                        # Now check the quadratic relationship
+                        # t² - 2i·t + 8mn(m²-n²)k² = 0
+                        constant = 8 * m * n * diff * k2
+                        discriminant = 4 * i_val^2 - 4 * constant
+                        
+                        if discriminant >= 0 and is_square(discriminant):
+                            sqrt_disc = isqrt(discriminant)
+                            t_val = (2 * i_val - sqrt_disc) // 2
+                            
+                            if t_val > 0 and i_val - t_val > 0:
+                                solutions.append((k, m, n, i_val, c_val, t_val))
+                                found += 1
+                                print(f"*** FOUND: k={k}, m={m}, n={n}, i={i_val}, c={c_val}, t={t_val} ***")
+                                
+                                # Check if this gives a magic square candidate
+                                check_magic_square_potential(m, n, k, i_val, c_val)
+                    else:
+                        # Even if c is not integer, i alone might be useful
+                        solutions.append((k, m, n, i_val))
+                        found += 1
+                        print(f"Found: k={k}, m={m}, n={n}, i={i_val}")
+    
+    return solutions
+
+def check_magic_square_potential(m, n, k, i_val, c_val):
+    """
+    Check if the parameters could form a magic square of squares
+    """
+    # In a 3x3 magic square of squares, the center is the average
+    # of various pairs. Check some basic properties
+    
+    # Example: In a magic square, the sum of all entries = 3S
+    # where S is the magic sum
+    
+    # For a magic square of squares, all entries must be perfect squares
+    # Here i and c are potential entries
+    
+    # Check if they satisfy known necessary conditions
+    if i_val > c_val:
+        # The difference i² - c² should be divisible by certain patterns
+        diff_sq = i_val^2 - c_val^2
+        if diff_sq % 8 == 0:
+            print(f"  Potential magic square candidate: i={i_val}, c={c_val}")
+            print(f"  i² - c² = {diff_sq} is divisible by 8")
+            return True
+    return False
+
+def analyze_solutions(solutions):
+    """
+    Analyze found solutions for patterns
+    """
+    if not solutions:
+        print("\nNo solutions to analyze.")
+        return
+    
+    print("\n" + "=" * 60)
+    print("SOLUTION ANALYSIS")
+    print("=" * 60)
+    
+    # Separate full solutions (with i,c,t) from partial solutions
+    full_solutions = [sol for sol in solutions if len(sol) >= 6]
+    partial_solutions = [sol for sol in solutions if len(sol) == 4]
+    
+    print(f"Full solutions (with i,c,t): {len(full_solutions)}")
+    print(f"Partial solutions (i only): {len(partial_solutions)}")
+    
+    if full_solutions:
+        print("\nFull solutions (k, m, n, i, c, t):")
+        for sol in full_solutions[:20]:  # Show first 20
+            print(f"  k={sol[0]}, m={sol[1]}, n={sol[2]}, i={sol[3]}, c={sol[4]}, t={sol[5]}")
+        
+        # Save to file
+        with open("i_solutions_full.txt", "w") as f:
+            f.write("k,m,n,i,c,t\n")
+            for sol in full_solutions:
+                f.write(f"{sol[0]},{sol[1]},{sol[2]},{sol[3]},{sol[4]},{sol[5]}\n")
+        print(f"\nFull solutions saved to 'i_solutions_full.txt'")
+    
+    if partial_solutions:
+        print("\nPartial solutions (k, m, n, i):")
+        for sol in partial_solutions[:20]:
+            print(f"  k={sol[0]}, m={sol[1]}, n={sol[2]}, i={sol[3]}")
+        
+        # Save to file
+        with open("i_solutions_partial.txt", "w") as f:
+            f.write("k,m,n,i\n")
+            for sol in partial_solutions:
+                f.write(f"{sol[0]},{sol[1]},{sol[2]},{sol[3]}\n")
+        print(f"\nPartial solutions saved to 'i_solutions_partial.txt'")
+    
+    # Statistics
+    if partial_solutions:
+        k_values = [sol[0] for sol in partial_solutions]
+        m_values = [sol[1] for sol in partial_solutions]
+        n_values = [sol[2] for sol in partial_solutions]
+        i_values = [sol[3] for sol in partial_solutions]
+        
+        from collections import Counter
+        print(f"\nStatistics:")
+        print(f"Most common k: {Counter(k_values).most_common(1)[0] if k_values else 'N/A'}")
+        print(f"Most common m: {Counter(m_values).most_common(1)[0] if m_values else 'N/A'}")
+        print(f"Most common n: {Counter(n_values).most_common(1)[0] if n_values else 'N/A'}")
+        print(f"i range: {min(i_values)} to {max(i_values)}")
+
+def extended_search_with_sampling(k_max=50000, sample_rate=100):
+    """
+    Extended search with sampling for very large ranges
+    """
+    solutions = []
+    
+    print("\n" + "=" * 60)
+    print("EXTENDED SAMPLING SEARCH")
+    print("=" * 60)
+    print(f"Sampling: k ≤ {k_max} (every {sample_rate}th value)")
+    print(f"m,n sampled strategically")
+    print("=" * 60)
+    
+    found = 0
+    
+    # Sample k values (every sample_rate-th)
+    for k in range(1, k_max + 1, sample_rate):
+        if k % (sample_rate * 10) == 0:
+            print(f"Sampling: k={k}/{k_max}, Found={found}")
+        
+        k2 = k^2
+        k4 = k2^2
+        
+        # Focus on small m,n differences for sampling
+        for delta in range(1, 101):  # Try small differences
+            for n in range(1, 1000):  # Moderate n range
+                m = n + delta
+                
+                if m > 10000:  # Limit m for sampling
+                    continue
+                
+                m2 = m^2
+                n2 = n^2
+                diff = m2 - n2
+                
+                if diff <= 0:
+                    continue
+                
+                diff2 = diff^2
+                
+                i_squared = (2 * n2 * diff2 * k4 + 
+                            (2 * m2 * n2 + 4 * m * n * diff) * k2 + 
+                            (m2 + k2 * diff2) / 2)
+                
+                if i_squared > 0 and is_square(i_squared):
+                    i_val = isqrt(i_squared)
+                    solutions.append((k, m, n, i_val))
+                    found += 1
+                    print(f"*** SAMPLED: k={k}, m={m}, n={n}, i={i_val} ***")
+    
+    return solutions
+
+# Main execution
+if __name__ == "__main__":
+    print("DIOPHANTINE EQUATION SOLVER WITH PERFECT SQUARE ANALYSIS")
+    print("=" * 80)
+    
+    # First, try a moderate search
+    print("\n1. MODERATE SEARCH")
+    moderate_solutions = find_solutions_with_perfect_squares(k_max=1000, m_max=1000, n_max=1000)
+    
+    # Analyze results
+    analyze_solutions(moderate_solutions)
+    
+    # If we found solutions, try to find more
+    if moderate_solutions:
+        print("\n2. EXTENDED SEARCH (based on patterns found)")
+        # Extract common patterns to guide extended search
+        if moderate_solutions:
+            # Get common k values from found solutions
+            common_k = [sol[0] for sol in moderate_solutions if len(sol) >= 4]
+            if common_k:
+                print(f"Common k values found: {set(common_k)}")
+        
+        # Try extended search with sampling
+        sampled_solutions = extended_search_with_sampling(k_max=10000, sample_rate=100)
+        analyze_solutions(sampled_solutions)
+    
+    # Final comprehensive search (commented out for performance)
+    print("\n3. COMPREHENSIVE SEARCH (OPTIONAL)")
+    print("Uncomment the following for full search (will take very long):")
+    print("# comprehensive_solutions = find_solutions_with_perfect_squares(k_max=10000, m_max=50000, n_max=50000)")
+    print("# analyze_solutions(comprehensive_solutions)")
+    
+    print("\n" + "=" * 80)
+    print("SEARCH COMPLETED")
+    print("=" * 80)
+
 Searching for solutions to g^2 equation...
 ============================================================
 SOLUTION: m=9, n=8, k=1, g=229
