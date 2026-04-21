@@ -1,47 +1,98 @@
 \begin{lstlisting} [style = sagemath]
-    ....: if all_solutions:
-....:     print("\nFirst 10 unique solutions (k, m, n, e):")
-....:     for i, sol in enumerate(all_solutions[:10]):
-....:         print(f"{i+1}. k={sol[0]}, m={sol[1]}, n={sol[2]}, e={sol[3]}")
-....: 
-....:     # Save to file for further analysis
-....:     with open("e_solutions.txt", "w") as f:
-....:         f.write("k,m,n,e\n")
-....:         for k, m, n, e in all_solutions:
-....:             f.write(f"{k},{m},{n},{e}\n")
-....:     print(f"\nSolutions saved to 'e_solutions.txt'")
-....: 
-....:     # Show some interesting examples
-....:     print(f"\nInteresting examples:")
-....:     # Find solution with smallest e
-....:     min_e_sol = min(all_solutions, key=lambda x: x[3])
-....:     print(f"Smallest e: k={min_e_sol[0]}, m={min_e_sol[1]}, n={min_e_sol[2
-....: ]}, e={min_e_sol[3]}")
-....: 
-....:     # Find solution with largest e
-....:     max_e_sol = max(all_solutions, key=lambda x: x[3])
-....:     print(f"Largest e: k={max_e_sol[0]}, m={max_e_sol[1]}, n={max_e_sol[2]
-....: }, e={max_e_sol[3]}")
-....: 
-=== INTEGER SOLUTIONS FOR e^2 EQUATION ===
-Searching for integer solutions...
-Parameters: k=1..20, m=1..50, n=1..50
-============================================================
+# Efficient search over large ranges
+import numpy as np
+from math import isqrt
 
-Found 3 solutions:
-k	m	n	e
-------------------------------
-1	3	2	17
-1	20	2	1156
-2	10	1	578
+def search_solutions(m_min=1, m_max=1000, n_min=1, n_max=None, k_max=1000):
+    """
+    Search for integer solutions to:
+    e^2 = 2*n^2*(m^2 - n^2)^2*k^4 + 2*(m*n)^2*k^2 + (m^2 + (k*(m^2 - n^2))^2)/2
+    
+    Parameters:
+    - m_min, m_max: Range for m (R2)
+    - n_min, n_max: Range for n (R3). If None, n_max = m_max
+    - k_max: Maximum absolute value for k
+    """
+    
+    if n_max is None:
+        n_max = m_max
+    
+    solutions = []
+    total_combinations = 0
+    checked_combinations = 0
+    
+    print(f"Searching m ∈ [{m_min}, {m_max}], n ∈ [{n_min}, {n_max}], |k| ≤ {k_max}")
+    print("-" * 60)
+    
+    for m in range(m_min, m_max + 1):
+        m2 = m * m
+        
+        for n in range(n_min, min(n_max, m) + 1):  # n < m to avoid negative (m^2 - n^2)^2
+            n2 = n * n
+            m2_minus_n2 = m2 - n2
+            
+            # Precompute constants for this (m, n) pair
+            diff_sq = m2_minus_n2 * m2_minus_n2
+            A = 4 * n2 * diff_sq  # Coefficient for k^4
+            B = 4 * m2 * n2       # Coefficient for k^2
+            C = m2                # Constant term
+            
+            for k in range(-k_max, k_max + 1):
+                if k == 0:
+                    # Special case k=0: RHS = m^2
+                    rhs = m2
+                else:
+                    k2 = k * k
+                    k4 = k2 * k2
+                    
+                    # Compute RHS efficiently
+                    term1 = A * k4
+                    term2 = B * k2
+                    term3 = diff_sq * k2  # (k*(m^2 - n^2))^2
+                    rhs = term1 + term2 + C + term3
+                
+                # Check if RHS is even and a valid e^2
+                if rhs % 2 == 0:
+                    e_sq = rhs // 2
+                    e = isqrt(e_sq)
+                    if e * e == e_sq:
+                        solutions.append((m, n, k, e))
+                
+                total_combinations += 1
+                
+            # Progress indicator
+            checked_combinations += 1
+            if checked_combinations % 1000 == 0:
+                print(f"Checked {checked_combinations} (m,n) pairs, found {len(solutions)} solutions so far...")
+    
+    print("-" * 60)
+    print(f"Search complete. Checked {total_combinations} total combinations.")
+    print(f"Found {len(solutions)} solution(s).")
+    
+    return solutions
 
-Analysis:
-Smallest k: 1
-Largest k: 2
-Smallest m: 3
-Largest m: 20
-Perfect square configurations: 3
-Efficient search with divisibility checks...
+# Run the search
+solutions = search_solutions(m_min=1, m_max=500, k_max=100)
 
-Efficient search found: 3 solutions
+# Display solutions
+if solutions:
+    print("\nSolutions (m, n, k, e):")
+    for sol in solutions[:50]:  # Show first 50
+        m, n, k, e = sol
+        # Verify the solution
+        lhs = e*e
+        rhs = 2*n*n*(m*m - n*n)**2 * k**4 + 2*(m*n)**2 * k**2 + (m*m + (k*(m*m - n*n))**2)/2
+        print(f"m={m:4d}, n={n:4d}, k={k:6d}, e={e:10d}  (verified: {abs(lhs - rhs) < 1e-10})")
+
+------------------------------------------------------------
+Search complete. Checked 25175250 total combinations.
+Found 6 solution(s).
+
+Solutions (m, n, k, e):
+m=   3, n=   2, k=    -1, e=        17  (verified: True)
+m=   3, n=   2, k=     1, e=        17  (verified: True)
+m=  10, n=   1, k=    -2, e=       578  (verified: True)
+m=  10, n=   1, k=     2, e=       578  (verified: True)
+m=  20, n=   2, k=    -1, e=      1156  (verified: True)
+m=  20, n=   2, k=     1, e=      1156  (verified: True)
 \end{lstlisting}
