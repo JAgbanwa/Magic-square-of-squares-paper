@@ -1,4 +1,4 @@
-\begin{lstlisting}[style=sagemath]
+
   from sage.all import *
 
 def find_solutions_with_perfect_squares(k_max=10000, m_max=100000, n_max=100000):
@@ -264,4 +264,3 @@ a^2 = 20800, i^2 = 20817
 
 SOLUTION: m=11, n=6, k=1, g=745
 a^2 = 17460, i^2 = 17545
-\end{lstlisting}
