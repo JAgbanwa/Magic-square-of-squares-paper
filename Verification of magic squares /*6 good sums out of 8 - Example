@@ -1,0 +1,47 @@
+// Magic square entries
+a := 11723^2;
+b := 129^2;
+c := 248^2;
+d := 121^2;
+e := 137241232;
+f := 501^2;
+g := 252^2;
+h := 499^2;
+i := 11713^2;
+
+// All 8 sums
+row1  := a + b + c;
+row2  := d + e + f;
+row3  := g + h + i;
+col1  := a + d + g;
+col2  := b + e + h;
+col3  := c + f + i;
+diag1 := a + e + i;
+diag2 := c + e + g;
+
+print "Row 1:  ", row1;
+print "Row 2:  ", row2;
+print "Row 3:  ", row3;
+print "Col 1:  ", col1;
+print "Col 2:  ", col2;
+print "Col 3:  ", col3;
+print "Diag 1: ", diag1;
+print "Diag 2: ", diag2;
+
+allEqual := (row1 eq row2) and (row2 eq row3) and (row3 eq col1) and
+            (col1 eq col2) and (col2 eq col3) and (col3 eq diag1) and
+            (diag1 eq diag2);
+
+if allEqual then
+    print "All 8 sums are equal to", row1;
+else
+    print "NOT all equal - sums differ.";
+    print "Differences from Row 1:";
+    print "  Row2  - Row1  =", row2  - row1;
+    print "  Row3  - Row1  =", row3  - row1;
+    print "  Col1  - Row1  =", col1  - row1;
+    print "  Col2  - Row1  =", col2  - row1;
+    print "  Col3  - Row1  =", col3  - row1;
+    print "  Diag1 - Row1  =", diag1 - row1;
+    print "  Diag2 - Row1  =", diag2 - row1;
+end if;
