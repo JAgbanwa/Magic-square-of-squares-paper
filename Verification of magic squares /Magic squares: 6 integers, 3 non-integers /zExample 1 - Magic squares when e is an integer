@@ -1,0 +1,41 @@
+// Define the entries
+a11 := 404^2;
+a12 := 1604^2;
+a13 := 1272976;
+
+a21 := 1564^2;
+a22 := 1156^2;
+a23 := 476^2;
+
+a31 := 1399696;
+a32 := 316^2;
+a33 := 2509456;
+
+// Row sums
+row1 := a11 + a12 + a13;
+row2 := a21 + a22 + a23;
+row3 := a31 + a32 + a33;
+
+// Column sums
+col1 := a11 + a21 + a31;
+col2 := a12 + a22 + a32;
+col3 := a13 + a23 + a33;
+
+// Diagonals
+diag1 := a11 + a22 + a33;
+diag2 := a13 + a22 + a31;
+
+// Collect all sums
+all_sums := [row1, row2, row3, col1, col2, col3, diag1, diag2];
+
+// Output everything
+"Row sums:", row1, row2, row3;
+"Column sums:", col1, col2, col3;
+"Diagonal sums:", diag1, diag2;
+
+// Check if all equal
+is_magic := &and[ s eq all_sums[1] : s in all_sums ];
+"Is it a magic square?", is_magic;
+
+// Inspect values directly
+all_sums;
