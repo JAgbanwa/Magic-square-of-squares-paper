@@ -1,32 +1,245 @@
-\begin{lstlisting} [style = sagemath]
-    ....:     print(f"Match: {lhs == rhs}")
-....: 
-....:     # Save to file
-....:     with open("i_solutions.txt", "w") as f:
-....:         f.write("k,m,n,i\n")
-....:         for k, m, n, i_val in all_solutions:
-....:             f.write(f"{k},{m},{n},{i_val}\n")
-....:     print(f"\nSolutions saved to 'i_solutions.txt'")
-....: 
-....:     # Show statistics
-....:     print(f"\nStatistics:")
-....:     k_values = [sol[0] for sol in all_solutions]
-....:     m_values = [sol[1] for sol in all_solutions]
-....:     n_values = [sol[2] for sol in all_solutions]
-....: 
-....:     print(f"Most common k: {max(set(k_values), key=k_values.count)}")
-....:     print(f"Most common m: {max(set(m_values), key=m_values.count)}")
-....:     print(f"Most common n: {max(set(n_values), key=n_values.count)}")
-....: 
-....: # Advanced search with perfect square analysis
-....: print("\n" + "="*60)
-....: print("ADVANCED SEARCH WITH MAGIC SQUARE POTENTIAL")
-....: advanced_solutions = find_solutions_with_perfect_squares(k_max=10000, m_ma
-....: x=100000, n_max=100000)
-=== INTEGER SOLUTIONS FOR i^2 EQUATION ===
-Equation: i^2 = 4 * k^4 * (m^2 - n^2)^2 * n^2 + m^2
+from math import isqrt
+from collections import Counter
+import time
 
-Searching for integer solutions...
-Parameters: k=1..100000, m=1..100000, n=1..100000
-============================================================
-\end{lstlisting}
+# ============================================
+# SEARCH FOR NON-ZERO SOLUTIONS
+# ============================================
+
+def search_nonzero_solutions(k_max=1000, m_max=1000, n_max=1000, show_progress=True):
+    """
+    Search for NON-ZERO integer solutions to:
+    i² = 4·k⁴·(m² - n²)²·n² + m²
+    
+    Conditions:
+    - k ≠ 0
+    - m ≠ 0, n ≠ 0
+    - m ≠ n (so m² - n² ≠ 0)
+    - i ≠ 0
+    """
+    solutions = []
+    
+    print(f"Searching for NON-ZERO solutions:")
+    print(f"  k ∈ [-{k_max}, {k_max}] (k ≠ 0)")
+    print(f"  m ∈ [1, {m_max}]")
+    print(f"  n ∈ [1, {min(n_max, m_max)}] (n < m)")
+    print(f"Total combinations to check: ~{2 * k_max * m_max * n_max // 2:,}")
+    print("-" * 70)
+    
+    total_k = 2 * k_max  # Excluding k=0
+    current_k_idx = 0
+    start_time = time.time()
+    
+    for k in range(-k_max, k_max + 1):
+        if k == 0:
+            continue  # Skip k=0
+        
+        k2 = k * k
+        k4 = k2 * k2
+        factor = 4 * k4
+        
+        for m in range(1, m_max + 1):
+            m2 = m * m
+            
+            # n must be strictly less than m
+            for n in range(1, min(n_max, m)):
+                n2 = n * n
+                m2_minus_n2 = m2 - n2
+                
+                diff_sq = m2_minus_n2 * m2_minus_n2
+                rhs = factor * diff_sq * n2 + m2
+                
+                i_val = isqrt(rhs)
+                if i_val * i_val == rhs and i_val != 0:
+                    solutions.append((k, m, n, i_val))
+                    
+                    if show_progress and len(solutions) % 50 == 0:
+                        print(f"Found {len(solutions)} solutions... Latest: k={k}, m={m}, n={n}, i={i_val}")
+        
+        current_k_idx += 1
+        if show_progress and current_k_idx % 50 == 0:
+            progress = float(current_k_idx) / float(total_k) * 100.0
+            elapsed = time.time() - start_time
+            print(f"Progress: {progress:.1f}% (k={k}), found {len(solutions)} solutions, elapsed: {elapsed:.1f}s")
+    
+    elapsed = time.time() - start_time
+    print(f"\nSearch completed in {elapsed:.2f} seconds")
+    
+    return solutions
+
+
+# ============================================
+# FIND SOLUTIONS WITH PERFECT SQUARES
+# ============================================
+
+def find_solutions_with_perfect_squares(k_max=10000, m_max=100000, n_max=100000):
+    """
+    Advanced search with perfect square analysis.
+    """
+    solutions = []
+    
+    print(f"Advanced search:")
+    print(f"  k ∈ [-{k_max}, {k_max}] (k ≠ 0)")
+    print(f"  m ∈ [1, {m_max}]")
+    print(f"  n ∈ [1, {min(n_max, m_max)}]")
+    print("-" * 70)
+    
+    start_time = time.time()
+    total_k = 2 * k_max
+    current_k_idx = 0
+    
+    for k in range(-k_max, k_max + 1):
+        if k == 0:
+            continue
+        
+        k2 = k * k
+        k4 = k2 * k2
+        factor = 4 * k4
+        
+        for m in range(1, m_max + 1):
+            m2 = m * m
+            
+            for n in range(1, min(n_max, m)):
+                n2 = n * n
+                m2_minus_n2 = m2 - n2
+                
+                diff_sq = m2_minus_n2 * m2_minus_n2
+                rhs = factor * diff_sq * n2 + m2
+                
+                i_val = isqrt(rhs)
+                if i_val * i_val == rhs and i_val != 0:
+                    solutions.append((k, m, n, i_val))
+        
+        current_k_idx += 1
+        if current_k_idx % 1000 == 0:
+            progress = float(current_k_idx) / float(total_k) * 100.0
+            elapsed = time.time() - start_time
+            print(f"Progress: {progress:.1f}% (k={k}), found {len(solutions)} solutions, elapsed: {elapsed:.1f}s")
+    
+    elapsed = time.time() - start_time
+    print(f"\nAdvanced search completed in {elapsed:.2f} seconds")
+    
+    return solutions
+
+
+# ============================================
+# MAIN EXECUTION
+# ============================================
+
+if __name__ == "__main__":
+    print("="*70)
+    print("SOLVING: i² = 4·k⁴·(m² - n²)²·n² + m²")
+    print("="*70)
+    
+    # First search with moderate range
+    print("\n" + "="*60)
+    print("INITIAL SEARCH (Moderate Range)")
+    print("="*60)
+    
+    k_max = 100
+    m_max = 200
+    n_max = 200
+    
+    solutions = search_nonzero_solutions(k_max=k_max, m_max=m_max, n_max=n_max)
+    
+    # Remove duplicates
+    all_solutions = list(set(solutions))
+    print(f"\nUnique solutions found: {len(all_solutions)}")
+    
+    # Validate solutions
+    print("\n" + "="*60)
+    print("VALIDATING SOLUTIONS")
+    print("="*60)
+    
+    for i, (k, m, n, i_val) in enumerate(all_solutions[:10]):
+        k2 = k * k
+        k4 = k2 * k2
+        m2 = m * m
+        n2 = n * n
+        m2_minus_n2 = m2 - n2
+        diff_sq = m2_minus_n2 * m2_minus_n2
+        
+        rhs = 4 * k4 * diff_sq * n2 + m2
+        lhs = i_val * i_val
+        
+        print(f"Match: {lhs == rhs}")
+    
+    # Save to file
+    with open("i_solutions.txt", "w") as f:
+        f.write("k,m,n,i\n")
+        for k, m, n, i_val in all_solutions:
+            f.write(f"{k},{m},{n},{i_val}\n")
+    print(f"\nSolutions saved to 'i_solutions.txt'")
+    
+    # Show statistics
+    if all_solutions:
+        print(f"\nStatistics:")
+        k_values = [sol[0] for sol in all_solutions]
+        m_values = [sol[1] for sol in all_solutions]
+        n_values = [sol[2] for sol in all_solutions]
+        
+        k_counter = Counter(k_values)
+        m_counter = Counter(m_values)
+        n_counter = Counter(n_values)
+        
+        print(f"Most common k: {k_counter.most_common(1)[0] if k_counter else 'N/A'}")
+        print(f"Most common m: {m_counter.most_common(1)[0] if m_counter else 'N/A'}")
+        print(f"Most common n: {n_counter.most_common(1)[0] if n_counter else 'N/A'}")
+        
+        # Additional statistics
+        print(f"\nAdditional Statistics:")
+        print(f"  k range: [{min(k_values)}, {max(k_values)}]")
+        print(f"  m range: [{min(m_values)}, {max(m_values)}]")
+        print(f"  n range: [{min(n_values)}, {max(n_values)}]")
+        print(f"  Positive k solutions: {len([k for k in k_values if k > 0])}")
+        print(f"  Negative k solutions: {len([k for k in k_values if k < 0])}")
+    
+    # Advanced search with perfect square analysis
+    print("\n" + "="*60)
+    print("ADVANCED SEARCH WITH MAGIC SQUARE POTENTIAL")
+    print("="*60)
+    
+    # Use smaller ranges for advanced search to avoid excessive runtime
+    advanced_solutions = find_solutions_with_perfect_squares(
+        k_max=500, 
+        m_max=500, 
+        n_max=500
+    )
+    
+    advanced_unique = list(set(advanced_solutions))
+    print(f"\nAdvanced search found {len(advanced_unique)} unique solutions")
+    
+    # Analyze advanced solutions for patterns
+    if advanced_unique:
+        print("\n" + "="*60)
+        print("PATTERN ANALYSIS")
+        print("="*60)
+        
+        # Check for Pythagorean relationships
+        pythagorean = [s for s in advanced_unique if s[3]*s[3] == s[1]*s[1] + s[2]*s[2]]
+        print(f"Pythagorean triples (i² = m² + n²): {len(pythagorean)}")
+        
+        # Check for arithmetic progressions
+        arithmetic = [s for s in advanced_unique if 2*s[1] == s[2] + s[3] or 2*s[2] == s[1] + s[3]]
+        print(f"Arithmetic progressions: {len(arithmetic)}")
+        
+        # Check for i being multiple of k
+        k_divides_i = [s for s in advanced_unique if s[0] != 0 and s[3] % abs(s[0]) == 0]
+        print(f"k divides i: {len(k_divides_i)} ({100.0*len(k_divides_i)/len(advanced_unique):.1f}%)")
+        
+        # Save advanced solutions
+        with open("i_solutions_advanced.txt", "w") as f:
+            f.write("k,m,n,i\n")
+            for k, m, n, i_val in sorted(advanced_unique):
+                f.write(f"{k},{m},{n},{i_val}\n")
+        print(f"\nAdvanced solutions saved to 'i_solutions_advanced.txt'")
+        
+        # Display sample advanced solutions
+        print("\nSample advanced solutions (first 20):")
+        for idx, sol in enumerate(sorted(advanced_unique)[:20]):
+            k, m, n, i_val = sol
+            print(f"{idx+1:3d}. k={k:4d}, m={m:4d}, n={n:4d}, i={i_val:10d}")
+    
+    print("\n" + "="*70)
+    print("ALL SEARCHES COMPLETE")
+    print("="*70)
